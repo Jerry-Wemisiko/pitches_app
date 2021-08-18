@@ -1,9 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
-from flask_migrate import Migrate
 from flask import Flask
 from flask_mail import Mail
 from config import config_options
+
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -12,7 +12,6 @@ mail = Mail()
 def create_app(config_name):
 
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 
 
     # Creating the app configurations
@@ -27,6 +26,9 @@ def create_app(config_name):
     #Registering blueprint
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint,url_prefix = '/authenticate')
 
 
 
