@@ -20,6 +20,3 @@ def index():
 
     return render_template('index.html',title = title,piches=pitches,interviews=interviews,pickuplines=pickuplines,product=product)
 
-# @main.route('/add_pich')
-# @login_required
-# def new_pitch(id):
