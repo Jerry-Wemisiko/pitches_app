@@ -1,8 +1,10 @@
+from app.email import mail_message
 from flask import render_template,redirect,url_for,flash,request
 from flask_login import login_user
 from flask_login.utils import login_required, logout_user
 from ..models import Pitch, User
 from .forms import RegistrationForm,LoginForm
+from ..email import mail_message
 from .. import db
 from . import auth
 
@@ -23,11 +25,13 @@ def login():
 def register():
     form = RegistrationForm
     if form.validate_on_submit():
-        user = User(email) = form.email.data,username = form.username.data,password = form.password.data)
+        user = User(email = form.email.data,username = form.username.data,password = form.password.data)
+       
         db.session.add(user)
         db.session.commit()
+
+        mail_message("We are Glad you are here","email/welcome_user",user.email,user = user)
         return redirect(url_for('auth.login'))
-        title = "New Account"
     return render_template('auth/signup.html',registration_form= form)
 
 @auth.route('/logout')

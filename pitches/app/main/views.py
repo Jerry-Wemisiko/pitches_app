@@ -1,4 +1,4 @@
-from flask import render_template,abort,redirect,url_for
+from flask import render_template,abort,redirect,url_for,request
 from . import main
 from flask_login import login_required
 from ..models import Pitch, User

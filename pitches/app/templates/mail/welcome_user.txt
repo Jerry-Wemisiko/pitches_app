@@ -1,0 +1,4 @@
+Hi{{user.username}}
+Welcome to pitches
+We are glad you have signed up for our application
+Enjoy
