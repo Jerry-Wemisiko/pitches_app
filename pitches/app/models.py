@@ -62,8 +62,59 @@ class Comment(db.Model):
         db.session.commit()
     
     @classmethod
-    def find_comments(self):
+    def find_comments(cls,pitch_id):
         comment = Comment.query.filter_by(pitch_id=pitch_id).all()
+        return comment
+    
+    def __repr__(self):
+        return f'Comment {self.comment}'
+
+class Upvote(db.Model):
+    __tablename__='upvotes'
+    id = db.Column(db.Integer,primary_key = True)
+    user_id =  db.Column(db.Integer, db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
+    upvote = db.Column(db.Integer)
+
+    def save_upvote(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def find_upvotes(cls,id):
+        upvotes = Upvote.query.filter_by(pitch_id=id).all()
+        return upvotes
+
+    def __repr__(self):
+        return f'{self.user_id} has {self.upvote}'
+
+
+class Downvote(db.Model):
+    __tablename__='downvotes'
+    id = db.Column(db.Integer,primary_key = True)
+    user_id =  db.Column(db.Integer, db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
+    downvote = db.Column(db.Integer)
+
+    def save_downvote(self):
+        db.session.add(self)
+        db.session.commit()
+    
+       @classmethod
+    def find_downvotes(cls,id):
+        downvotes = Downvote.query.filter_by(pitch_id=id).all()
+        return downvotes
+
+    def __repr__(self):
+        return f'{self.user_id} has {self.downvote}'
+
+    
+
+
+    
+
+
+    
 
 
     
