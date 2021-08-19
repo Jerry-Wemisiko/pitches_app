@@ -1,7 +1,14 @@
-from . import db
+from . import db,login_manager
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_login import UserMixin
 
-class User(db.Model):
+
+@login_manager.user_loader
+def login_user(user_id):
+    return User.query.get(int(user_id))
+
+
+class User(UserMixin,db.Model):
     __tablename__='users'
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255),index = True)
@@ -12,7 +19,6 @@ class User(db.Model):
     downvote = db.relationship('Downvote' ,backref = 'users',lazy= 'dynamic')
     comments = db.relationship('Comment',backref = 'users',lazy= 'dynamic')
    
-
 
     @property
     def password(self):
@@ -100,7 +106,7 @@ class Downvote(db.Model):
         db.session.add(self)
         db.session.commit()
     
-       @classmethod
+    @classmethod
     def find_downvotes(cls,id):
         downvotes = Downvote.query.filter_by(pitch_id=id).all()
         return downvotes
