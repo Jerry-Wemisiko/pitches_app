@@ -4,8 +4,9 @@ from flask_login import UserMixin
 
 
 @login_manager.user_loader
-def login_user(user_id):
+def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 
 class User(UserMixin,db.Model):
@@ -18,6 +19,8 @@ class User(UserMixin,db.Model):
     upvote = db.relationship('Upvote' ,backref = 'users',lazy= 'dynamic')
     downvote = db.relationship('Downvote' ,backref = 'users',lazy= 'dynamic')
     comments = db.relationship('Comment',backref = 'users',lazy= 'dynamic')
+    pass_secure = db.Column(db.String(255))
+    password_hash = db.Column(db.String(255))
    
 
     @property
