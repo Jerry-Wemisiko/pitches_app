@@ -1,9 +1,10 @@
 from flask import render_template,abort,redirect,url_for,request
 from . import main
-from flask_login import login_required
-from ..models import Pitch, User
-from  .forms import UpdateProfile
+from flask_login import login_required,current_user
+from ..models import Comment, Pitch, User
+from  .forms import UpdateProfile, formPitch
 from .. import  db,photos
+import markdown2
 
 #Views
 @main.route('/')
@@ -17,18 +18,40 @@ def index():
     interviews = Pitch.query.filter_by(category = 'interviews').all()
     product = Pitch.query.filter_by(category = 'product').all()
 
-
-
     return render_template('index.html',title = title,piches=pitches,interviews=interviews,pickuplines=pickuplines,product=product)
+
+@main.route('/create_new', methods = ["GET","POST"])
+@login_required
+def create_pitch():
+    form = formPitch
+    if form.validate_on_submit:
+        title = form.title.data
+        category = form.category.data
+        info = form.info.data
+        created_pitch = Pitch(title=title,category=category,info= info)
+        created_pitch.save_pitch()
+        return redirect(url_for(main.index))
+
+    return render_template('new-pitch.html',form=form) 
+
+
+@main.route('/comment/<int: id>')
+@login_required
+def comment(pitch_id):
+    comment = Comment.query.get(pitch_id)
+    if comment is None:
+        abort(404)
+
+    
 
 @main.route('/user/<uname>')
 def profile(uname):
     user = User.query.filter_by(username = uname).first()
-
     if user is None:
         abort(404)
 
-    return render_template('profile/profile.html',user=user)
+    return render_template('profile/userprofile.html',user=user)
+
 @main.route('/user<uname>/update', methods = ["GET","POST"])
 @login_required
 def update_profile(uname):
@@ -41,10 +64,11 @@ def update_profile(uname):
         user.bio = form.bio.data
         db.session.add(user)
         db.session.commit()
-
         return redirect(url_for('.profile',uname=user.username))
 
     return render_template('profile/update.html',form = form)
+
+
 @main.route('/user/<uname>/update/pic',methods = ["POST"])
 @login_required
 def update_pic(uname):
@@ -55,5 +79,3 @@ def update_pic(uname):
          user.profile_pic_path = path
          db.session.commit()
      return redirect(url_for('main.profile',uname = uname))    
-
-

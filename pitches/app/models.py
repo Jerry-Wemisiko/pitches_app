@@ -4,7 +4,7 @@ from flask_login import UserMixin
 
 
 @login_manager.user_loader
-def louser(user_id):
+def login_user(user_id):
     return User.query.get(int(user_id))
 
 
@@ -15,8 +15,6 @@ class User(UserMixin,db.Model):
     email = db.Column(db.String(3255),unique= True, index = True)
     bio = db.Column(db.String(255))
     profile_pic_path = db.Column(db.String())
-    upvote = db.relationship('Upvote' ,backref = 'users',lazy= 'dynamic')
-    downvote = db.relationship('Downvote' ,backref = 'users',lazy= 'dynamic')
     comments = db.relationship('Comment',backref = 'users',lazy= 'dynamic')
     pass_secure = db.Column(db.String(255))
     password_hash = db.Column(db.String(255))
@@ -46,8 +44,6 @@ class Pitch(db.Model):
     title = db.Column(db.String(255))
     info = db.Column(db.String)
     category = db.Column(db.Integer, db.ForeignKey('categories.id'))
-    upvote = db.relationship('Upvote' ,backref = 'pitch',lazy= 'dynamic')
-    downvote = db.relationship('Downvote' ,backref = 'pitch',lazy= 'dynamic')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment',backref = 'users',lazy= 'dynamic')
 
@@ -77,44 +73,6 @@ class Comment(db.Model):
     def __repr__(self):
         return f'Comment {self.comment}'
 
-class Upvote(db.Model):
-    __tablename__='upvotes'
-    id = db.Column(db.Integer,primary_key = True)
-    user_id =  db.Column(db.Integer, db.ForeignKey('users.id'))
-    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
-    upvote = db.Column(db.Integer)
-
-    def save_upvote(self):
-        db.session.add(self)
-        db.session.commit()
-
-    @classmethod
-    def find_upvotes(cls,id):
-        upvotes = Upvote.query.filter_by(pitch_id=id).all()
-        return upvotes
-
-    def __repr__(self):
-        return f'{self.user_id} has {self.upvote}'
-
-
-class Downvote(db.Model):
-    __tablename__='downvotes'
-    id = db.Column(db.Integer,primary_key = True)
-    user_id =  db.Column(db.Integer, db.ForeignKey('users.id'))
-    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
-    downvote = db.Column(db.Integer)
-
-    def save_downvote(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    @classmethod
-    def find_downvotes(cls,id):
-        downvotes = Downvote.query.filter_by(pitch_id=id).all()
-        return downvotes
-
-    def __repr__(self):
-        return f'{self.user_id} has {self.downvote}'
 
     
 
