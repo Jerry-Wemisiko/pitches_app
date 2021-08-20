@@ -1,12 +1,13 @@
 import os
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:skyles@localhost/pitches'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:SKYLES@localhost/pitches'
     UPLOADED_PHOTOS_DEST = 'app/static/photos'
 
     SIMPLEMDE_JS_IIFE = True
     SIMPLEMDE_USE_CDN = True
-
+    
+    
 
     #mail configurations
     MAIL_SERVER = 'smtp.googlemail.com'
@@ -17,7 +18,7 @@ class Config:
 
 
 class ProdConfig(Config):
-    SQLALCHEMY_I = os.environ.get("DATABASE_URL")  
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")  
     pass
 
 class DevConfig(Config):
@@ -25,5 +26,5 @@ class DevConfig(Config):
 
 config_options= {
     'development': DevConfig,
-    'prodection':ProdConfig,
+    'production':ProdConfig,
 }

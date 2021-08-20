@@ -1,7 +1,5 @@
-from app.email import mail_message
 from flask import render_template,redirect,url_for,flash,request
-from flask_login import login_user
-from flask_login.utils import login_required, logout_user
+from flask_login import login_required, logout_user,login_user
 from ..models import Pitch, User
 from .forms import RegistrationForm,LoginForm
 from ..email import mail_message
