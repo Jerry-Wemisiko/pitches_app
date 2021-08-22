@@ -4,7 +4,7 @@ from flask_login import login_required,current_user
 from ..models import Comment, Pitch, User
 from  .forms import UpdateProfile, formPitch
 from .. import  db,photos
-import markdown2
+# import markdown2
 
 #Views
 @main.route('/')
@@ -23,19 +23,19 @@ def index():
 @main.route('/create_new', methods = ["GET","POST"])
 @login_required
 def create_pitch():
-    form = formPitch
-    if form.validate_on_submit:
-        title = form.title.data
-        category = form.category.data
-        info = form.info.data
+    p_form = formPitch
+    if p_form.validate_on_submit:
+        title = p_form.title.data
+        category = p_form.category.data
+        info = p_form.info.data
         created_pitch = Pitch(title=title,category=category,info= info)
         created_pitch.save_pitch()
         return redirect(url_for(main.index))
 
-    return render_template('new-pitch.html',form=form) 
+    return render_template('new-pitch.html',form=p_form) 
 
 
-@main.route('/comment/<int: id>')
+@main.route('/comment/<int:id>')
 @login_required
 def comment(pitch_id):
     comment = Comment.query.get(pitch_id)
@@ -44,15 +44,16 @@ def comment(pitch_id):
 
     
 
-@main.route('/user/<uname>')
+@main.route('/user/<uname>',methods=["GET","POST"])
 def profile(uname):
     user = User.query.filter_by(username = uname).first()
+    pitches = Pitch.query.filter_by(user_id=user.id)
     if user is None:
         abort(404)
+    title = f'{user.username}'    
+    return render_template('profile/userprofile.html',user=user,title=title,pitches=pitches)
 
-    return render_template('profile/userprofile.html',user=user)
-
-@main.route('/user<uname>/update', methods = ["GET","POST"])
+@main.route('/user<uname>/update', methods = ["POST","GET"])
 @login_required
 def update_profile(uname):
     user = User.query.filter_by(username = uname).first()
