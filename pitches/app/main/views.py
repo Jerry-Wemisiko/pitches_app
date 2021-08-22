@@ -12,7 +12,7 @@ def index():
     View root page function that returns the index page and its data
     '''
     title = 'Welcome to Pitches'
-    pitches = Pitch.query.all()
+    pitches = Pitch.get_pitches()
     # pickuplines = Pitch.query.filter_by(category = 'pickuplines').all()
     # interviews = Pitch.query.filter_by(category = 'interviews').all()
     # product = Pitch.query.filter_by(category = 'product').all()
@@ -30,7 +30,7 @@ def create_pitch(uname):
         created_pitch.save_pitch()
         return redirect(url_for('.index'))
 
-    return render_template('pitch.html',form=form,user=user)  
+    return render_template('new-pitch.html',form=form,user=user)  
 
 @main.route('/user/<uname>',methods= ["GET","POST"])
 @login_required
