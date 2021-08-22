@@ -9,6 +9,5 @@ class UpdateProfile(FlaskForm):
     
 class formPitch(FlaskForm):
     title = StringField('Title',validators =[Required()])
-    category = SelectField('Category',choices=[('pickuplines','pickuplines'),('interviews','interviews'),('product','product')],validators=[Required()])
     info = TextAreaField('Input pitch',validators=[Required()])
     submit = SubmitField('Submit')

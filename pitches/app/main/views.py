@@ -14,25 +14,24 @@ def index():
     '''
     title = 'Welcome to Pitches'
     pitches = Pitch.query.all()
-    pickuplines = Pitch.query.filter_by(category = 'pickuplines').all()
-    interviews = Pitch.query.filter_by(category = 'interviews').all()
-    product = Pitch.query.filter_by(category = 'product').all()
+    # pickuplines = Pitch.query.filter_by(category = 'pickuplines').all()
+    # interviews = Pitch.query.filter_by(category = 'interviews').all()
+    # product = Pitch.query.filter_by(category = 'product').all()
 
-    return render_template('index.html',title = title,piches=pitches,interviews=interviews,pickuplines=pickuplines,product=product)
+    return render_template('index.html',title = title,piches=pitches)
 
 @main.route('/create_new', methods = ["GET","POST"])
 @login_required
 def create_pitch():
-    p_form = formPitch
-    if p_form.validate_on_submit:
-        title = p_form.title.data
-        category = p_form.category.data
-        info = p_form.info.data
-        created_pitch = Pitch(title=title,category=category,info= info)
+    form = formPitch
+    if form.validate_on_submit:
+        title = form.title.data
+        info = form.info.data
+        created_pitch = Pitch(title=title,info= info)
         created_pitch.save_pitch()
         return redirect(url_for(main.index))
 
-    return render_template('new-pitch.html',form=p_form) 
+    return render_template('new-pitch.html',form=form) 
 
 
 @main.route('/comment/<int:id>')
@@ -44,16 +43,15 @@ def comment(pitch_id):
 
     
 
-@main.route('/user/<uname>',methods=["GET","POST"])
+@main.route('/user/<uname>')
 def profile(uname):
     user = User.query.filter_by(username = uname).first()
-    pitches = Pitch.query.filter_by(user_id=user.id)
     if user is None:
         abort(404)
-    title = f'{user.username}'    
-    return render_template('profile/userprofile.html',user=user,title=title,pitches=pitches)
 
-@main.route('/user<uname>/update', methods = ["POST","GET"])
+    return render_template('profile/userprofile.html',user=user)
+
+@main.route('/user<uname>/update', methods = ["GET","POST"])
 @login_required
 def update_profile(uname):
     user = User.query.filter_by(username = uname).first()
