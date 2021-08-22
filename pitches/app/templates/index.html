@@ -1,4 +1,26 @@
 {% extends 'base.html' %}
-
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('static',filename ='css/index.css')}}">
+{% endblock %}
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2 style="text-align: center" >Pitch Here</h2>
+                <ul class="list-group list-group-horizontal-md">
+                {% for pitch in pitches %}
+                    <li class="list-group-item">
+                        <h3>{{pitch.title}}</h3>
+                        <h4>{{pitch.user.username}}</h4>
+                        <p>{{pitch.info}}</p>
+                        <p>{{pitch.comments}}</p>
+                        <a href="{{url_for('main.pitches',uname = current_user.username)}}"></a>
+                    </li>
+                    <br>
+                    <br>
+                </ul>
+                {% endfor %}
+        </div>  
+    </div>
+</div>
 {% endblock %}

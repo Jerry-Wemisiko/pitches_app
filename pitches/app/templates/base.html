@@ -1,8 +1,14 @@
-{% extends 'bootstrap/base.html %}
+{%extends 'bootstrap/base.html' %}
 
+{% block styles %}
 
+  {{super()}}
+
+  {{simplemde.css}}
+
+{% endblock%}  
 {% block navbar %}
-
-    {% include navbar.html %}
-
+  {% include 'navbar.html' %}
+{% endblock %}
+{% block content%}
 {% endblock %}

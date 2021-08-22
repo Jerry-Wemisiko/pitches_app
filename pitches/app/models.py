@@ -9,16 +9,15 @@ def login_user(user_id):
 
 
 class User(UserMixin,db.Model):
-    __tablename__='users'
+    __tablename__ = 'users'
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255),index = True)
-    email = db.Column(db.String(3255),unique= True, index = True)
+    email = db.Column(db.String(255),unique = True, index = True)
     bio = db.Column(db.String(255))
     profile_pic_path = db.Column(db.String())
-    comments = db.relationship('Comment',backref = 'users',lazy= 'dynamic')
-    pass_secure = db.Column(db.String(255))
+    comments = db.relationship('Comment',backref = 'user',lazy = "dynamic")
+    pitches = db.relationship('Pitch',backref = 'user',lazy = "dynamic")   
     password_hash = db.Column(db.String(255))
-   
 
     @property
     def password(self):
@@ -35,56 +34,30 @@ class User(UserMixin,db.Model):
         db.session.add(self)
         db.session.commit()
         
-    def __repr__(self):
-        return f'User {self.username}'
-
 class Pitch(db.Model):
-    __table__name__ = 'pitch'
+    __tablename__ = 'pitch'
     id = db.Column(db.Integer,primary_key = True)
-    title = db.Column(db.String(255))
+    title = db.Column(db.String)
     info = db.Column(db.String)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment',backref = 'pitch',lazy= 'dynamic')
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
 
     def save_pitch(self):
         db.session.add(self)
         db.session.commit()
     
-    def __repr__(self):
-        return f'Pitch {self.info}'
+    @classmethod
+    def get_pitches(cls):
+        pitches = Pitch.query.order_by(Pitch.info()).all()
+        return pitches
 
+    @classmethod
+    def get_user_pitches(cls,id):
+        pitches = Pitch.query.filter_by(user_id= id).order_by(Pitch.posted.info()).all()
+        return pitches
+
+    
 class Comment(db.Model):
-    __tablename__='comments'
+    __tablename__= 'comments'
     id = db.Column(db.Integer,primary_key = True)
     comment = db.Column(db.String)
-    user_id =  db.Column(db.Integer, db.ForeignKey('users.id'))
-    pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'))
-
-    def save_comment(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    @classmethod
-    def find_comments(cls,pitch_id):
-        comment = Comment.query.filter_by(pitch_id=pitch_id).all()
-        return comment
-    
-    def __repr__(self):
-        return f'Comment {self.comment}'
-
-
-    
-
-
-    
-
-
-    
-
-
-    
-
-    
-
-    
-
+    user_id =  db.Column(db.Integer, db.ForeignKey("users.id"))
