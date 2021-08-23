@@ -46,13 +46,13 @@ class Pitch(db.Model):
         db.session.commit()
     
     @classmethod
-    def get_pitches(cls):
-        pitches = Pitch.query.order_by(Pitch.info()).all()
+    def get_pitches(cls,id):
+        pitches = Pitch.query.filter_by(user_id=id).all()
         return pitches
 
     @classmethod
     def get_user_pitches(cls,id):
-        pitches = Pitch.query.filter_by(user_id= id).order_by(Pitch.posted.info()).all()
+        pitches = Pitch.query.filter_by(user_id= id).all()
         return pitches
 
     
