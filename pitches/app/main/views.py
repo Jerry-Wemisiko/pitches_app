@@ -20,17 +20,19 @@ def index():
 
 @main.route('/create_new', methods = ["GET","POST"])
 @login_required
-def create_pitch(uname):
+def create_pitch():
+
     form = formPitch()
-    user = User.query.filter_by(username=uname).first()
     if form.validate_on_submit:
         title = form.title.data
         info = form.info.data
-        created_pitch = Pitch(title=title,info= info)
+
+        created_pitch = Pitch(pitch_title=title,pitch_info= info,user=current_user)
         created_pitch.save_pitch()
         return redirect(url_for('.index'))
+    title =f'{form.title} pitch'
 
-    return render_template('new-pitch.html',form=form,user=user)  
+    return render_template('new-pitch.html',title=title,pitch_form=form)  
 
 @main.route('/user/<uname>',methods= ["GET","POST"])
 @login_required

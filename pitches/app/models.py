@@ -50,10 +50,6 @@ class Pitch(db.Model):
         pitches = Pitch.query.filter_by(user_id=id).all()
         return pitches
 
-    @classmethod
-    def get_user_pitches(cls,id):
-        pitches = Pitch.query.filter_by(user_id= id).all()
-        return pitches
 
     
 class Comment(db.Model):

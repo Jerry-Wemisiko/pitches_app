@@ -2,9 +2,8 @@
 {% macro displayPitch(pitches) %}
 
     {% for pitch in pitches %}
-    
         <h2>{{pitch.title}}</h2>
-        <p>{{pitch.info}}</p>
+        <p>{{pitch.info}} | truncate(30)</p>
     {% endfor %}
     
 {% endmacro %}    
